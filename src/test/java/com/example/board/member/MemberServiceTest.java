@@ -13,11 +13,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
+//@Transactional //Test코드에 붙으면 임시공간 생겨서 종료 후 롤백
 public class MemberServiceTest {
 
     @InjectMocks
