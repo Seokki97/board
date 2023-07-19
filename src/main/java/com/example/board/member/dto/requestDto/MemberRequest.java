@@ -3,7 +3,7 @@ package com.example.board.member.dto.requestDto;
 import lombok.*;
 
 @Getter
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberRequest {
 
     private String nickname;
@@ -16,5 +16,4 @@ public class MemberRequest {
         this.nickname = nickname;
         this.email = email;
     }
-
 }
