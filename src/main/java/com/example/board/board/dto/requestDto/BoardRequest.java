@@ -1,13 +1,13 @@
 package com.example.board.board.dto.requestDto;
 
+import com.example.board.member.domain.Member;
 import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BoardRequestDto {
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class BoardRequest {
 
-    private Long boardId;
+    private Member member;
 
     private String title;
 
@@ -16,9 +16,8 @@ public class BoardRequestDto {
     private String createDateTime;
 
     @Builder
-    BoardRequestDto(Long boardId, String title, String content, String createDateTime){
-        this.boardId = boardId;
-//        this.memberId = memberId;
+    BoardRequest(Member member, Long boardId, String title, String content, String createDateTime){
+        this.member = member;
         this.title = title;
         this.content = content;
         this.createDateTime = createDateTime;
