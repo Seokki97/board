@@ -4,7 +4,7 @@ import com.example.board.member.domain.Member;
 import lombok.*;
 
 @Getter
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardRequest {
 
     private Member member;
