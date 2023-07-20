@@ -27,7 +27,7 @@ public class BoardController {
     public ResponseEntity<Void> writeBoard(@RequestBody BoardRequest boardRequest,
                                            @PathVariable("memberId") Long memberId){
 
-        boardService.writeBoard(boardRequest,memberId);
+        boardService.writePost(boardRequest,memberId);
 
         return ResponseEntity.noContent().build();  // Void 반환
     }
@@ -37,13 +37,19 @@ public class BoardController {
         Request를 board pk로 받아서 컬럼에 있는 모든 값 반환
     */
 
-    //ID로 단일조회
+    // 게시글 ID로 단일조회
     @GetMapping("/show/{boardId}")
     public ResponseEntity<Board> showBoardById(@PathVariable("boardId")Long boardId){
-        return ResponseEntity.ok().body(boardService.showBoardById(boardId));
+        return ResponseEntity.ok().body(boardService.showPostById(boardId));
     }
 
-    //게시글 전체조회
+    // 회원 ID로 해당 ID의 게시글 전체조회
+    @GetMapping("/show")
+    public ResponseEntity<List<Board>> showBoardByMemberId(@RequestParam("memberId")Long memberId){
+        return ResponseEntity.ok().body(boardService.showAllPostByMemberId(memberId));
+    }
+
+    // 게시글 전체조회
     @GetMapping("show/all")
     public ResponseEntity<List<Board>> findAll(){
         return ResponseEntity.ok().body(boardService.showAllPost());

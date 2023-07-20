@@ -22,9 +22,8 @@ public class Board {
     //Todo : JoinColumn 확실히 짚고가기.
     @ManyToOne
     @JoinColumn(name = "memberId", referencedColumnName = "member_id")
-//    private Long memberId;          //이렇게 바로 받아오면 안되고안되고 Member 객체를 받아와야 하는가?
-                                        //멤버 객체 만을 받아오는것만으로 column 키설정이 가능?
     private Member member;
+
 
     private String writer;
 
