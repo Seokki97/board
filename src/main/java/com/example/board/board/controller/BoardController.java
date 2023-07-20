@@ -65,9 +65,7 @@ public class BoardController {
                                             @PathVariable("memberId")Long memberId,
                                             @RequestBody BoardRequest boardRequest){
 
-//        boardService.modifyPost(boardId,memberId,boardRequest);
         return ResponseEntity.ok().body(boardService.modifyPost(boardId,memberId,boardRequest));
-//        return ResponseEntity.noContent().build();
     }
 
 
@@ -80,7 +78,6 @@ public class BoardController {
     public ResponseEntity<Void> deletePost(@PathVariable("boardId")Long boardId,
                                            @PathVariable("memberId")Long memberId){
         boardService.deletePost(boardId,memberId);
-
         return ResponseEntity.noContent().build();
     }
 
