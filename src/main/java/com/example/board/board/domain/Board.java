@@ -38,6 +38,9 @@ public class Board {
     @Column(name = "create_date_time")
     private String createDateTime;
 
+    @Column(name = "update_date_time")
+    private String updateDateTime;
+
     @Builder
     public Board(Long boardId,Member member, String title, String content, String createDateTime){
         this.boardId = boardId;
@@ -46,5 +49,6 @@ public class Board {
         this.title = title;
         this.content = content;
         this.createDateTime = createDateTime;
+        this.updateDateTime = createDateTime;
     }
 }

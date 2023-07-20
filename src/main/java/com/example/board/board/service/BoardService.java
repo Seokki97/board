@@ -23,7 +23,8 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+//    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
     /*
         작성 API
@@ -43,10 +44,10 @@ public class BoardService {
 
 
     /*
-        조회 API
-        1) 게시물 ID로 단일조회
-        2) 회원 ID 로 해당 ID의 게시물 전체조회
-        3) 게시물 전체조회
+    *    조회 API
+    *    1) 게시물 ID로 단일조회
+    *    2) 회원 ID 로 해당 ID의 게시물 전체조회
+    *    3) 게시물 전체조회
     */
     // 게시물 ID 로 단일조회
     public Board showPostById(Long id){
@@ -68,11 +69,41 @@ public class BoardService {
         return boardList;
     }
 
+    /*Todo
+     *   수정 API
+    *   (미완료) : updateDateTime가 DB에 반영 x -> 저장을 어떻게 시키지..?
+    *   title 과 content를 repository 안에서 해결시켜서 난항.....
+    * */
+
+    public BoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
+        if(!boardRepository.existsById(boardId)){
+            throw new IllegalArgumentException("해당 게시물을 찾을 수 없습니다");
+        }
+
+        if(!showPostById(boardId).getMember().getMemberId().equals(memberId)){
+            throw new MemberNotFoundException();
+        }
+
+        boardRepository.modifyTitleAndContent(boardId, memberId, boardRequest);
+
+//        boardRepository.save(board);
+
+        Board board = showPostById(boardId);
+
+        return BoardResponse.builder()
+                .boardId(board.getBoardId())
+                .writer(board.getWriter())
+                .title(boardRequest.getTitle())
+                .content(boardRequest.getContent())
+                .createDateTime(board.getCreateDateTime())
+                .updateDateTime(formatDate)
+                .build();
+    }
 
     /*
-        삭제 API
-        1) 게시글 ID 는 불일치         : 해당 게시물 찾을 수 없습니다.
-        2) 게시글ID는 존재하지만, 회원ID와 불일치    : 해당 회원을 찾을 수 없습니다.
+    *    삭제 API
+    *    1) 게시글 ID 는 불일치         : 해당 게시물 찾을 수 없습니다.
+    *    2) 게시글ID는 존재하지만, 회원ID와 불일치    : 해당 회원을 찾을 수 없습니다.
     */
 
     public void deletePost(Long boardId, Long memberId){

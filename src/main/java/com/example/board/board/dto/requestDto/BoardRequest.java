@@ -7,19 +7,13 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardRequest {
 
-    private Member member;
-
     private String title;
 
     private String content;
 
-    private String createDateTime;
-
     @Builder
-    BoardRequest(Member member, Long boardId, String title, String content, String createDateTime){
-        this.member = member;
+    BoardRequest(Member member, Long boardId, String title, String content){
         this.title = title;
         this.content = content;
-        this.createDateTime = createDateTime;
     }
 }

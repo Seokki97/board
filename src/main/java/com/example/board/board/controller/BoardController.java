@@ -21,7 +21,7 @@ public class BoardController {
 
     /*
         <게시글 작성 api>
-        게시글 작성 -> Request를 title content member로 받아서 void로 반환
+         Request를 title content member로 받아서 void로 반환
     */
     @PostMapping("/write/{memberId}")
     public ResponseEntity<Void> writeBoard(@RequestBody BoardRequest boardRequest,
@@ -34,7 +34,7 @@ public class BoardController {
 
     /*
         <게시글 조회 api>
-        Request를 board pk로 받아서 컬럼에 있는 모든 값 반환
+         Request를 board pk로 받아서 컬럼에 있는 모든 값 반환
     */
 
     // 게시글 ID로 단일조회
@@ -60,6 +60,15 @@ public class BoardController {
         게시글 수정 -> Request로 member의 pk 와 board의 pk title content를 받아서 수정된 부분을 반환
     */
 
+    @PutMapping("/modify/{boardId}/{memberId}")
+    public ResponseEntity<BoardResponse> modifyPost(@PathVariable("boardId")Long boardId,
+                                            @PathVariable("memberId")Long memberId,
+                                            @RequestBody BoardRequest boardRequest){
+
+//        boardService.modifyPost(boardId,memberId,boardRequest);
+        return ResponseEntity.ok().body(boardService.modifyPost(boardId,memberId,boardRequest));
+//        return ResponseEntity.noContent().build();
+    }
 
 
     /*
