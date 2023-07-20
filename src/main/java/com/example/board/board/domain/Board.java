@@ -10,17 +10,18 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Entity(name = "board")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity(name = "board")
 public class Board {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long boardId;
 
     //Todo : JoinColumn 확실히 짚고가기.
     @ManyToOne
-    @JoinColumn(name = "member_id", referencedColumnName = "memberId")
+    @JoinColumn(name = "memberId", referencedColumnName = "member_id")
 //    private Long memberId;          //이렇게 바로 받아오면 안되고안되고 Member 객체를 받아와야 하는가?
                                         //멤버 객체 만을 받아오는것만으로 column 키설정이 가능?
     private Member member;
