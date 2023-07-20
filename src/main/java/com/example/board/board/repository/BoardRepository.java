@@ -21,12 +21,17 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from board b where b.member.memberId = ?1") //?1 -> parameter 첫번째 자리에 있는걸 넣겠다는 뜻.
     List<Board> findAllByMemberId(Long memberId);
 
-
-    @Query(value= "UPDATE board b SET b.title = :#{#requestInfo.title}, b.content = :#{#requestInfo.content} " +
-            "WHERE b.board_id = :#{#boardId} AND b.member_id = :#{#memberId}", nativeQuery = true)
-    @Modifying
-    @Transactional
-    void modifyTitleAndContent(@Param(value = "boardId")Long boardId,
-                                @Param(value="memberId")Long memberId,
-                                @Param(value = "requestInfo")BoardRequest boardRequest);
 }
+
+
+
+
+
+
+//    @Query(value= "UPDATE board b SET b.title = :#{#requestInfo.title}, b.content = :#{#requestInfo.content} " +
+//            "WHERE b.board_id = :#{#boardId} AND b.member_id = :#{#memberId}", nativeQuery = true)
+//    @Modifying
+//    @Transactional
+//    void modifyTitleAndContent(@Param(value = "boardId")Long boardId,
+//                                @Param(value="memberId")Long memberId,
+//                                @Param(value = "requestInfo")BoardRequest boardRequest);

@@ -42,13 +42,13 @@ public class Board {
     private String updateDateTime;
 
     @Builder
-    public Board(Long boardId,Member member, String title, String content, String createDateTime){
+    public Board(Long boardId,Member member, String title, String content, String createDateTime,String updateDateTime){
         this.boardId = boardId;
         this.member = member;
         this.writer = member.getNickname();
         this.title = title;
         this.content = content;
         this.createDateTime = createDateTime;
-        this.updateDateTime = createDateTime;
+        this.updateDateTime = updateDateTime;
     }
 }

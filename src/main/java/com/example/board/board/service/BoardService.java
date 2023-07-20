@@ -84,20 +84,29 @@ public class BoardService {
             throw new MemberNotFoundException();
         }
 
-        boardRepository.modifyTitleAndContent(boardId, memberId, boardRequest);
-
-//        boardRepository.save(board);
-
         Board board = showPostById(boardId);
 
+
+        Board modifiedBoard =  board.builder()
+                    .boardId(board.getBoardId())
+                    .member(memberRepository.findByMemberId(memberId).get())
+                    .title(boardRequest.getTitle())
+                    .content(boardRequest.getContent())
+                    .createDateTime(board.getCreateDateTime())
+                    .updateDateTime(formatDate)
+                    .build();
+
+        boardRepository.save(modifiedBoard);
+
         return BoardResponse.builder()
-                .boardId(board.getBoardId())
-                .writer(board.getWriter())
-                .title(boardRequest.getTitle())
-                .content(boardRequest.getContent())
-                .createDateTime(board.getCreateDateTime())
-                .updateDateTime(formatDate)
+                .boardId(modifiedBoard.getBoardId())
+                .writer(modifiedBoard.getWriter())
+                .title(modifiedBoard.getTitle())
+                .content(modifiedBoard.getContent())
+                .createDateTime(modifiedBoard.getCreateDateTime())
+                .updateDateTime(modifiedBoard.getUpdateDateTime())
                 .build();
+
     }
 
     /*
