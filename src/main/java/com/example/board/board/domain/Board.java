@@ -20,6 +20,8 @@ public class Board {
     private Long boardId;
 
     //Todo : JoinColumn 확실히 짚고가기.
+
+    // 이렇게 객체 자체의 primary 키를 받아서 객체로 저장 가능
     @ManyToOne
     @JoinColumn(name = "memberId", referencedColumnName = "member_id")
     private Member member;

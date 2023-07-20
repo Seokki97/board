@@ -51,21 +51,33 @@ public class BoardController {
 
     // 게시글 전체조회
     @GetMapping("show/all")
-    public ResponseEntity<List<Board>> findAll(){
+    public ResponseEntity<List<Board>> showPostAll(){
         return ResponseEntity.ok().body(boardService.showAllPost());
     }
 
-
-    // <Update Board>
-    // 게시글 수정 -> Request로 member의 pk 와 board의 pk title content를 받아서 수정된 부분을 반환
-
-
-    // <Delete Board>
-    // 게시글 삭제 -> request로 board pk + member pk 받아서 void로 반환
+    /*
+        <Update Board>
+        게시글 수정 -> Request로 member의 pk 와 board의 pk title content를 받아서 수정된 부분을 반환
+    */
 
 
-    // <Search>
-    // 게시글 검색 -> 게시글 제목으로 찾기 (일부만 입력해도 찾아짐) request는 String ~~로 응답은 해당 게시물 pk반환
-    //           -> 내용으로 찾기
 
+    /*
+        <게시글 삭제 api>
+        request로 board pk + member pk 받아서 void로 반환
+    */
+
+    @DeleteMapping("/delete/{boardId}/{memberId}")
+    public ResponseEntity<Void> deletePost(@PathVariable("boardId")Long boardId,
+                                           @PathVariable("memberId")Long memberId){
+        boardService.deletePost(boardId,memberId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    /*
+        <Search>
+        게시글 검색 -> 게시글 제목으로 찾기 (일부만 입력해도 찾아짐) request는 String ~~로 응답은 해당 게시물 pk반환
+                  -> 내용으로 찾기
+    */
 }
