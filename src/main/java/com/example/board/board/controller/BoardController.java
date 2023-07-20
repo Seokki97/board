@@ -1,10 +1,15 @@
 package com.example.board.board.controller;
 
-import com.example.board.board.dto.requestDto.BoardRequestDto;
+import com.example.board.board.domain.Board;
+import com.example.board.board.dto.requestDto.BoardRequest;
+import com.example.board.board.dto.responseDto.BoardResponse;
+import com.example.board.board.repository.BoardRepository;
 import com.example.board.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/board")
@@ -13,16 +18,36 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    // <Create>
-    // 게시글 작성 -> Request를 title content member로 받아서 void로 반환
+
+    /*
+        <게시글 작성 api>
+        게시글 작성 -> Request를 title content member로 받아서 void로 반환
+    */
     @PostMapping("/write/{memberId}")
-    public ResponseEntity<Void> writeBoard(@RequestBody BoardRequestDto boardRequestDto,
+    public ResponseEntity<Void> writeBoard(@RequestBody BoardRequest boardRequest,
                                            @PathVariable("memberId") Long memberId){
-        boardService.writeBoard(memberId, boardRequestDto);
+
+        boardService.writeBoard(boardRequest,memberId);
+
+        return ResponseEntity.noContent().build();  // Void 반환
     }
 
-    // <Read Board>
-    // 게시글 조회 -> Request를 board pk로 받아서 컬럼에 있는 모든 값 반환
+    /*
+        <게시글 조회 api>
+        Request를 board pk로 받아서 컬럼에 있는 모든 값 반환
+    */
+
+    //ID로 단일조회
+    @GetMapping("/show/{boardId}")
+    public ResponseEntity<Board> showBoardById(@PathVariable("boardId")Long boardId){
+        return ResponseEntity.ok().body(boardService.showBoardById(boardId));
+    }
+
+    //게시글 전체조회
+    @GetMapping("show/all")
+    public ResponseEntity<List<Board>> findAll(){
+        return ResponseEntity.ok().body(boardService.showAllPost());
+    }
 
 
     // <Update Board>

@@ -1,11 +1,17 @@
 package com.example.board.board.repository;
 
 import com.example.board.board.domain.Board;
+import com.example.board.board.dto.requestDto.BoardRequest;
+import com.example.board.board.dto.responseDto.BoardResponse;
 import com.example.board.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+    Optional<Board> findById(BoardRequest boardRequest);
 
 }

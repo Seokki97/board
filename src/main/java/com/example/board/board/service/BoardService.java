@@ -1,21 +1,21 @@
 package com.example.board.board.service;
 
 import com.example.board.board.domain.Board;
-import com.example.board.board.dto.requestDto.BoardRequestDto;
+import com.example.board.board.dto.requestDto.BoardRequest;
+import com.example.board.board.dto.responseDto.BoardResponse;
 import com.example.board.board.repository.BoardRepository;
 import com.example.board.member.domain.Member;
 import com.example.board.member.repository.MemberRepository;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
-@RequiredArgsConstructor        //Todo private final 생성자 ?
+@RequiredArgsConstructor
 public class BoardService {
 
     private final MemberRepository memberRepository;
@@ -23,13 +23,30 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-    public Board writeBoard(Long memberId , BoardRequestDto boardRequestDto){
 
-        Member member = memberRepository.findByMemberId(memberId).get();
+    // 게시물 작성 기능
+    public void writeBoard(BoardRequest boardRequest, Long id){
+        Board board = Board.builder()
+                .member(memberRepository.findByMemberId(id).get())
+                .title(boardRequest.getTitle())
+                .content(boardRequest.getContent())
+                .createDateTime(formatDate)
+                .build();
 
-        boardRequestDto.setCreateDateTime(formatDate);
+        boardRepository.save(board);
+    }
 
-        //Todo
-//        Board board = boardRepository.save();
+    // 게시물 ID 로 단일조회
+    public Board showBoardById(Long id){
+        Board board = boardRepository.findById(id).orElseThrow();
+
+        return board;
+    }
+
+    // 게시물 전체 조회
+    public List<Board> showAllPost(){
+        List<Board> boardList = boardRepository.findAll();
+
+        return boardList;
     }
 }
