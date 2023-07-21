@@ -86,4 +86,12 @@ public class BoardController {
         게시글 검색 -> 게시글 제목으로 찾기 (일부만 입력해도 찾아짐) request는 String ~~로 응답은 해당 게시물 pk반환
                   -> 내용으로 찾기
     */
+
+    @GetMapping("/search")
+    public ResponseEntity<Long> searchPost(@RequestParam("title")String title){
+
+        Long test = boardService.searchPostByTitle(title);
+        System.out.println(test);
+        return ResponseEntity.ok().body(test);
+    }
 }

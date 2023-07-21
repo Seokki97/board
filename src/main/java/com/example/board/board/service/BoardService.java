@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -70,9 +71,10 @@ public class BoardService {
     }
 
     /*Todo
-     *   수정 API
-    *   (미완료) : updateDateTime가 DB에 반영 x -> 저장을 어떻게 시키지..?
-    *   title 과 content를 repository 안에서 해결시켜서 난항.....
+     *   수정 API -> refactor 하기
+    *   수정 할 때 쿼리를 안쓰고, 그냥 그 객체를 바꾸기.
+        캐시메모리랑 비교해서 이전데이터랑 달라진게 있으면
+        자동으로 바꿔줌 ->따로 저장 안해도됨
     * */
 
     public BoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
@@ -128,5 +130,15 @@ public class BoardService {
         }
 
         boardRepository.delete(board);
+    }
+
+    /*
+    *   조회 API
+    *   게시글 제목으로 찾기 (일부만 입력해도 찾아짐)
+    * */
+
+    public Long searchPostByTitle(String title){
+        Long getBoardId = boardRepository.findByTitle(title);
+        return getBoardId;
     }
 }

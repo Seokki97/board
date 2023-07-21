@@ -21,6 +21,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from board b where b.member.memberId = ?1") //?1 -> parameter 첫번째 자리에 있는걸 넣겠다는 뜻.
     List<Board> findAllByMemberId(Long memberId);
 
+    @Query("select b.boardId from board b where b.title = ?1")
+    Long findByTitle(String title);
+
 }
 
 
