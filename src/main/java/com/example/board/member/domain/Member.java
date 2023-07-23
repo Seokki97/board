@@ -1,19 +1,16 @@
 package com.example.board.member.domain;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  //생성자
+@Entity(name = "members")        // member : database error
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 1부터 자동 증분
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
@@ -29,6 +26,4 @@ public class Member {
         this.nickname = nickname;
         this.email = email;
     }
-
-
 }
