@@ -5,9 +5,13 @@ import com.example.board.member.dto.requestDto.MemberRequest;
 import com.example.board.member.dto.responseDto.MemberResponse;
 import com.example.board.member.exception.MemberNotFoundException;
 import com.example.board.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
+
 @Service
+//@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
 
@@ -43,4 +47,5 @@ public class MemberService {
                 .nickname(member.getNickname())
                 .build();
     }
+
 }
