@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -71,12 +72,9 @@ public class BoardService {
         return boardList;
     }
 
-    /*Todo
-     *   수정 API -> refactor 하기
-    *   수정 할 때 쿼리를 안쓰고, 그냥 그 객체를 바꾸기.
-        캐시메모리랑 비교해서 이전데이터랑 달라진게 있으면
-        자동으로 바꿔줌 ->따로 저장 안해도됨
-    * */
+    /*
+     *   수정 API
+     */
 
     @Transactional
     public UpdateBoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
@@ -127,8 +125,19 @@ public class BoardService {
     *   게시글 제목으로 찾기 (일부만 입력해도 찾아짐)
     * */
 
-    public Long searchPostByTitle(String title){
-        Long getBoardId = boardRepository.findByTitle(title);
-        return getBoardId;
+    public List<Long> searchPostByTitle(String title){
+        List<Board> getBoard = boardRepository.findByTitleContaining(title);
+
+        return getBoard.stream()
+                .map(Board::getBoardId)
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> searchPostByContent(String content){
+        List<Board> getBoard = boardRepository.findByContentContaining(content);
+
+        return getBoard.stream()
+                .map(Board::getBoardId)
+                .collect(Collectors.toList());
     }
 }

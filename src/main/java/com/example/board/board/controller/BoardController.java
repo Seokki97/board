@@ -88,11 +88,15 @@ public class BoardController {
                   -> 내용으로 찾기
     */
 
-    @GetMapping("/search")
-    public ResponseEntity<Long> searchPost(@RequestParam("title")String title){
+    @GetMapping("/search/title/{title}")
+    public ResponseEntity<List<Long>> searchPostByTitle(@PathVariable("title")String title){
+        List<Long> getBoardId = boardService.searchPostByTitle(title);
+        return ResponseEntity.ok().body(getBoardId);
+    }
 
-        Long test = boardService.searchPostByTitle(title);
-        System.out.println(test);
-        return ResponseEntity.ok().body(test);
+    @GetMapping("/search/content/{content}")
+    public ResponseEntity<List<Long>> searchPostByContent(@PathVariable("content")String content){
+        List<Long> getBoardId = boardService.searchPostByContent(content);
+        return ResponseEntity.ok().body(getBoardId);
     }
 }
