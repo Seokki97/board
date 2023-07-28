@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,13 +37,13 @@ public class Board {
     private String content;
 
     @Column(name = "create_date_time")
-    private String createDateTime;
+    private LocalDateTime createDateTime;
 
     @Column(name = "update_date_time")
-    private String updateDateTime;
+    private LocalDateTime updateDateTime;
 
     @Builder
-    public Board(Long boardId,Member member, String title, String content, String createDateTime,String updateDateTime){
+    public Board(Long boardId,Member member, String title, String content, LocalDateTime createDateTime,LocalDateTime updateDateTime){
         this.boardId = boardId;
         this.member = member;
         this.writer = member.getNickname();
@@ -50,5 +51,11 @@ public class Board {
         this.content = content;
         this.createDateTime = createDateTime;
         this.updateDateTime = updateDateTime;
+    }
+
+    public void update(String title, String content,LocalDateTime updateDateTime){
+        this.title = title;
+        this.content=content;
+        this.updateDateTime=updateDateTime;
     }
 }

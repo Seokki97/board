@@ -3,6 +3,7 @@ package com.example.board.board.service;
 import com.example.board.board.domain.Board;
 import com.example.board.board.dto.requestDto.BoardRequest;
 import com.example.board.board.dto.responseDto.BoardResponse;
+import com.example.board.board.dto.responseDto.UpdateBoardResponse;
 import com.example.board.board.repository.BoardRepository;
 import com.example.board.member.domain.Member;
 import com.example.board.member.exception.MemberNotFoundException;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -24,8 +26,8 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-//    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+//    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+    LocalDateTime formatDate = LocalDateTime.now();
 
     /*
         작성 API
@@ -42,7 +44,6 @@ public class BoardService {
 
         boardRepository.save(board);
     }
-
 
     /*
     *    조회 API
@@ -77,7 +78,8 @@ public class BoardService {
         자동으로 바꿔줌 ->따로 저장 안해도됨
     * */
 
-    public BoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
+    @Transactional
+    public UpdateBoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
         if(!boardRepository.existsById(boardId)){
             throw new IllegalArgumentException("해당 게시물을 찾을 수 없습니다");
         }
@@ -88,27 +90,15 @@ public class BoardService {
 
         Board board = showPostById(boardId);
 
+        board.update(boardRequest.getTitle(),
+                boardRequest.getContent(),
+                formatDate);
 
-        Board modifiedBoard =  board.builder()
-                    .boardId(board.getBoardId())
-                    .member(memberRepository.findByMemberId(memberId).get())
-                    .title(boardRequest.getTitle())
-                    .content(boardRequest.getContent())
-                    .createDateTime(board.getCreateDateTime())
-                    .updateDateTime(formatDate)
-                    .build();
-
-        boardRepository.save(modifiedBoard);
-
-        return BoardResponse.builder()
-                .boardId(modifiedBoard.getBoardId())
-                .writer(modifiedBoard.getWriter())
-                .title(modifiedBoard.getTitle())
-                .content(modifiedBoard.getContent())
-                .createDateTime(modifiedBoard.getCreateDateTime())
-                .updateDateTime(modifiedBoard.getUpdateDateTime())
+        return UpdateBoardResponse.builder()
+                .title(board.getTitle())
+                .content(board.getContent())
+                .updateDateTime(board.getUpdateDateTime())
                 .build();
-
     }
 
     /*
