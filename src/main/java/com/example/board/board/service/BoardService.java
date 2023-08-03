@@ -125,7 +125,7 @@ public class BoardService {
     }
 
     /*
-    *   조회 API
+    *   검색 API
     *   게시글 제목으로 찾기 (일부만 입력해도 찾아짐)
     * */
 
