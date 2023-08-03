@@ -18,6 +18,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -128,15 +130,80 @@ public class BoardServiceTest {
         assertEquals("내용", result.getContent());
 
     }
+
+    @DisplayName("게시물 전체 조회")
+    @Test
+    void showAllPostTest(){
+
+        List<Board> boardList=  new ArrayList<>();
+
+        Board board1 = mock(Board.class);
+        Board board2 = mock(Board.class);
+
+        boardList.add(board1);
+        boardList.add(board2);
+
+        when(boardRepository.findAll()).thenReturn(boardList);
+
+        List<Board> result = boardService.showAllPost();
+
+        verify(boardRepository,times(1)).findAll();
+
+        assertEquals(2,result.size());
+    }
+
+    @Test
+    @DisplayName("회원 ID 로 해당 ID 게시물 전체 조회")
+        //Todo : 총 3개의 게시글 중에서 memberId가 일치하는 2개의 게시물을 찾아야 하는데... 어떻게 짜지?
+    void showAllPostByMemberIdTest(){
+        Long memberId1 = 1L;
+        Long memberId2 = 2L;
+
+        Member member1 = Member.builder()
+                .memberId(memberId1)
+                .email("동")
+                .nickname("동동")
+                .build();
+
+        Member member2 = Member.builder()
+                .memberId(memberId2)
+                .email("구리")
+                .nickname("구리구리")
+                .build();
+
+        Board board1 = mock(Board.class);
+        Board board2 = mock(Board.class);
+        Board board3 = mock(Board.class);
+
+
+
+//        List<Board> matchingBoardList = new ArrayList<>();
+//        matchingBoardList.add(board2);
+//        matchingBoardList.add(board3);
+
+        //원하는 값을 주입가능.
+        when(board1.getMember()).thenReturn(member1);
+        when(board2.getMember()).thenReturn(member2);
+        when(board3.getMember()).thenReturn(member2);
+
+        List<Board> listAll = new ArrayList<>();
+        listAll.add(board1);
+        listAll.add(board2);
+        listAll.add(board3);
+
+        when(boardRepository.findAll()).thenReturn(listAll);
+//        when(boardRepository.findAllByMemberId(memberId2)).thenReturn(matchingBoardList);
+
+        List<Board> result = boardService.showAllPostByMemberId(memberId2);
+
+        verify(boardRepository,times(1)).findAllByMemberId(memberId2);
+
+        assertEquals(2,result.size());
+
+    }
 }
 
 /*
-// 게시물 ID 로 단일조회
-    public Board showPostById(Long id){
-        Board board = boardRepository.findById(id).orElseThrow();
-
-        return board;
-    }
 
     // 회원 ID 로 해당 ID 게시물 전체 조회
     public List<Board> showAllPostByMemberId(Long id){
@@ -144,10 +211,5 @@ public class BoardServiceTest {
         return boardList;
     }
 
-    // 게시물 전체 조회
-    public List<Board> showAllPost(){
-        List<Board> boardList = boardRepository.findAll();
 
-        return boardList;
-    }
  */
