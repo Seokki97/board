@@ -27,15 +27,14 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-//    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-    LocalDateTime formatDate = LocalDateTime.now();
-
     /*
         작성 API
     */
 
     // 게시물 작성 기능
     public void writePost(BoardRequest boardRequest, Long id){
+        LocalDateTime formatDate = LocalDateTime.now();
+
         Board board = Board.builder()
                 .member(memberRepository.findByMemberId(id).get())
                 .title(boardRequest.getTitle())
@@ -85,6 +84,8 @@ public class BoardService {
         if(!showPostById(boardId).getMember().getMemberId().equals(memberId)){
             throw new MemberNotFoundException();
         }
+
+        LocalDateTime formatDate = LocalDateTime.now();
 
         Board board = showPostById(boardId);
 
