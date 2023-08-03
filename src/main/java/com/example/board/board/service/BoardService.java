@@ -8,7 +8,9 @@ import com.example.board.board.repository.BoardRepository;
 import com.example.board.member.domain.Member;
 import com.example.board.member.exception.MemberNotFoundException;
 import com.example.board.member.repository.MemberRepository;
+import com.example.board.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final MemberRepository memberRepository;
-
     private final BoardRepository boardRepository;
+
+    private final MemberService memberService;
+
 
     /*
         작성 API
@@ -36,7 +39,7 @@ public class BoardService {
         LocalDateTime formatDate = LocalDateTime.now();
 
         Board board = Board.builder()
-                .member(memberRepository.findByMemberId(id).get())
+                .member(memberService.findMemberById(id).toMember())
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContent())
                 .createDateTime(formatDate)
