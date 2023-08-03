@@ -54,6 +54,11 @@ public class MemberServiceTest {
                 .nickname("석")
                 .build();
 
+        /*
+        여기서 사용된 any(Member.class)는 Mockito의 any 메서드로,
+        어떤 Member 객체를 인자로 받아도 모두 mockMember 객체를 반환하도록 지정.
+        이렇게 함으로써 특정 인자에 의존하지 않고 모든 Member 객체에 대해 테스트를 수행할 수 있음
+         */
         when(memberRepository.save(any(Member.class))).thenReturn(mockMember);
 
         memberService.saveMemberProfile(memberRequest);
