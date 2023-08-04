@@ -4,6 +4,7 @@ import com.example.board.board.domain.Board;
 import com.example.board.board.dto.requestDto.BoardRequest;
 import com.example.board.board.dto.responseDto.BoardResponse;
 import com.example.board.board.dto.responseDto.UpdateBoardResponse;
+import com.example.board.board.exception.BoardNotFoundException;
 import com.example.board.board.repository.BoardRepository;
 import com.example.board.member.domain.Member;
 import com.example.board.member.exception.MemberNotFoundException;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,14 +58,17 @@ public class BoardService {
     */
     // 게시물 ID 로 단일조회
     public Board showPostById(Long id){
-        Board board = boardRepository.findById(id).orElseThrow();
+        Board board = boardRepository.findById(id).orElseThrow(BoardNotFoundException::new);
 
         return board;
     }
 
     // 회원 ID 로 해당 ID 게시물 전체 조회
-    public List<Board> showAllPostByMemberId(Long id){
+    public List<Board> showAllPostByMemberId(Long id) throws MemberNotFoundException{
         List<Board> boardList = boardRepository.findAllByMemberId(id);
+        if(boardList.size()==0){
+            throw new MemberNotFoundException();
+        }
         return boardList;
     }
 
