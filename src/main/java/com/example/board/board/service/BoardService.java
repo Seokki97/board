@@ -117,7 +117,7 @@ public class BoardService {
     public void deletePost(Long boardId, Long memberId){
 
         if(!boardRepository.existsById(boardId)){
-            throw new IllegalArgumentException("해당 게시물을 찾을 수 없습니다.");
+            throw new BoardNotFoundException();
         }
 
         Board board = boardRepository.findById(boardId).get();
