@@ -33,7 +33,6 @@ public class BoardCreateTest {
 
     @DisplayName("글 작성 테스트 - 회원아이디 존재")
     @Test
-    //회원이 발견되지 않는 경우 (주어진 ID로 회원을 찾을 수 없는 경우)와 같은 다양한 시나리오를 커버하도록 추가적인 테스트 케이스를 고려해보세요.
     public void writePostTest(){
         Long memberId = 1L;
 
