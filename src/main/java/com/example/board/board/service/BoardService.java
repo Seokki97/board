@@ -86,7 +86,7 @@ public class BoardService {
     @Transactional
     public UpdateBoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
         if(!boardRepository.existsById(boardId)){
-            throw new IllegalArgumentException("해당 게시물을 찾을 수 없습니다");
+            throw new BoardNotFoundException();
         }
 
         if(!showPostById(boardId).getMember().getMemberId().equals(memberId)){
