@@ -3,29 +3,34 @@ package com.example.board.board.service;
 import com.example.board.board.domain.Board;
 import com.example.board.board.dto.requestDto.BoardRequest;
 import com.example.board.board.dto.responseDto.BoardResponse;
+import com.example.board.board.dto.responseDto.UpdateBoardResponse;
+import com.example.board.board.exception.BoardNotFoundException;
 import com.example.board.board.repository.BoardRepository;
 import com.example.board.member.domain.Member;
 import com.example.board.member.exception.MemberNotFoundException;
 import com.example.board.member.repository.MemberRepository;
+import com.example.board.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final MemberRepository memberRepository;
-
     private final BoardRepository boardRepository;
 
-    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-//    String formatDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    private final MemberService memberService;
+
 
     /*
         작성 API
@@ -33,8 +38,10 @@ public class BoardService {
 
     // 게시물 작성 기능
     public void writePost(BoardRequest boardRequest, Long id){
+        LocalDateTime formatDate = LocalDateTime.now();
+
         Board board = Board.builder()
-                .member(memberRepository.findByMemberId(id).get())
+                .member(memberService.findMemberById(id).toMember())
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContent())
                 .createDateTime(formatDate)
@@ -42,7 +49,6 @@ public class BoardService {
 
         boardRepository.save(board);
     }
-
 
     /*
     *    조회 API
@@ -52,14 +58,17 @@ public class BoardService {
     */
     // 게시물 ID 로 단일조회
     public Board showPostById(Long id){
-        Board board = boardRepository.findById(id).orElseThrow();
+        Board board = boardRepository.findById(id).orElseThrow(BoardNotFoundException::new);
 
         return board;
     }
 
     // 회원 ID 로 해당 ID 게시물 전체 조회
-    public List<Board> showAllPostByMemberId(Long id){
+    public List<Board> showAllPostByMemberId(Long id) throws MemberNotFoundException{
         List<Board> boardList = boardRepository.findAllByMemberId(id);
+        if(boardList.size()==0){
+            throw new MemberNotFoundException();
+        }
         return boardList;
     }
 
@@ -70,45 +79,33 @@ public class BoardService {
         return boardList;
     }
 
-    /*Todo
-     *   수정 API -> refactor 하기
-    *   수정 할 때 쿼리를 안쓰고, 그냥 그 객체를 바꾸기.
-        캐시메모리랑 비교해서 이전데이터랑 달라진게 있으면
-        자동으로 바꿔줌 ->따로 저장 안해도됨
-    * */
+    /*
+     *   수정 API
+     */
 
-    public BoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
+    @Transactional
+    public UpdateBoardResponse modifyPost(Long boardId, Long memberId, BoardRequest boardRequest){
         if(!boardRepository.existsById(boardId)){
-            throw new IllegalArgumentException("해당 게시물을 찾을 수 없습니다");
+            throw new BoardNotFoundException();
         }
 
         if(!showPostById(boardId).getMember().getMemberId().equals(memberId)){
             throw new MemberNotFoundException();
         }
 
+        LocalDateTime formatDate = LocalDateTime.now();
+
         Board board = showPostById(boardId);
 
+        board.update(boardRequest.getTitle(),
+                boardRequest.getContent(),
+                formatDate);
 
-        Board modifiedBoard =  board.builder()
-                    .boardId(board.getBoardId())
-                    .member(memberRepository.findByMemberId(memberId).get())
-                    .title(boardRequest.getTitle())
-                    .content(boardRequest.getContent())
-                    .createDateTime(board.getCreateDateTime())
-                    .updateDateTime(formatDate)
-                    .build();
-
-        boardRepository.save(modifiedBoard);
-
-        return BoardResponse.builder()
-                .boardId(modifiedBoard.getBoardId())
-                .writer(modifiedBoard.getWriter())
-                .title(modifiedBoard.getTitle())
-                .content(modifiedBoard.getContent())
-                .createDateTime(modifiedBoard.getCreateDateTime())
-                .updateDateTime(modifiedBoard.getUpdateDateTime())
+        return UpdateBoardResponse.builder()
+                .title(board.getTitle())
+                .content(board.getContent())
+                .updateDateTime(board.getUpdateDateTime())
                 .build();
-
     }
 
     /*
@@ -120,7 +117,7 @@ public class BoardService {
     public void deletePost(Long boardId, Long memberId){
 
         if(!boardRepository.existsById(boardId)){
-            throw new IllegalArgumentException("해당 게시물을 찾을 수 없습니다.");
+            throw new BoardNotFoundException();
         }
 
         Board board = boardRepository.findById(boardId).get();
@@ -133,12 +130,23 @@ public class BoardService {
     }
 
     /*
-    *   조회 API
+    *   검색 API
     *   게시글 제목으로 찾기 (일부만 입력해도 찾아짐)
     * */
 
-    public Long searchPostByTitle(String title){
-        Long getBoardId = boardRepository.findByTitle(title);
-        return getBoardId;
+    public List<Long> searchPostByTitle(String title){
+        List<Board> getBoard = boardRepository.findByTitleContaining(title);
+
+        return getBoard.stream()
+                .map(Board::getBoardId)
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> searchPostByContent(String content){
+        List<Board> getBoard = boardRepository.findByContentContaining(content);
+
+        return getBoard.stream()
+                .map(Board::getBoardId)
+                .collect(Collectors.toList());
     }
 }

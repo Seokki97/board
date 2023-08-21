@@ -3,6 +3,7 @@ package com.example.board.board.controller;
 import com.example.board.board.domain.Board;
 import com.example.board.board.dto.requestDto.BoardRequest;
 import com.example.board.board.dto.responseDto.BoardResponse;
+import com.example.board.board.dto.responseDto.UpdateBoardResponse;
 import com.example.board.board.repository.BoardRepository;
 import com.example.board.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -61,9 +62,9 @@ public class BoardController {
     */
 
     @PutMapping("/modify/{boardId}/{memberId}")
-    public ResponseEntity<BoardResponse> modifyPost(@PathVariable("boardId")Long boardId,
-                                            @PathVariable("memberId")Long memberId,
-                                            @RequestBody BoardRequest boardRequest){
+    public ResponseEntity<UpdateBoardResponse> modifyPost(@PathVariable("boardId")Long boardId,
+                                                          @PathVariable("memberId")Long memberId,
+                                                          @RequestBody BoardRequest boardRequest){
 
         return ResponseEntity.ok().body(boardService.modifyPost(boardId,memberId,boardRequest));
     }
@@ -87,11 +88,15 @@ public class BoardController {
                   -> 내용으로 찾기
     */
 
-    @GetMapping("/search")
-    public ResponseEntity<Long> searchPost(@RequestParam("title")String title){
+    @GetMapping("/search/title/{title}")
+    public ResponseEntity<List<Long>> searchPostByTitle(@PathVariable("title")String title){
+        List<Long> getBoardId = boardService.searchPostByTitle(title);
+        return ResponseEntity.ok().body(getBoardId);
+    }
 
-        Long test = boardService.searchPostByTitle(title);
-        System.out.println(test);
-        return ResponseEntity.ok().body(test);
+    @GetMapping("/search/content/{content}")
+    public ResponseEntity<List<Long>> searchPostByContent(@PathVariable("content")String content){
+        List<Long> getBoardId = boardService.searchPostByContent(content);
+        return ResponseEntity.ok().body(getBoardId);
     }
 }
